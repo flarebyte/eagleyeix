@@ -1,3 +1,12 @@
+*.log
+.DS_Store
+node_modules/
+dist/
+report/
+temp/
+.message
+.todo.yaml
+
 # See https://www.dartlang.org/guides/libraries/private-files
 
 # Files and directories created by pub
@@ -25,3 +34,6 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+coverage/
+.idea/
