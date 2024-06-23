@@ -1,4 +1,4 @@
-import 'package:eagleyeix/eagleyeix.dart';
+import 'package:eagleyeix/metric.dart';
 
 void main() {
 
