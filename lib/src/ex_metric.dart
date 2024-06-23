@@ -144,20 +144,20 @@ class ExHierarchicalMetricCollection {
   /// Clones the current collection.
   ExHierarchicalMetricCollection clone() {
     var clonedCollection = ExHierarchicalMetricCollection(context: context);
-    _metrics.forEach((metric) {
+    for (var metric in _metrics) {
       clonedCollection.addMetric(metric);
-    });
+    }
     return clonedCollection;
   }
 
   /// Filters the collection based on the given predicate.
   ExHierarchicalMetricCollection filter(ExMetricPredicate predicate) {
     var filteredCollection = ExHierarchicalMetricCollection(context: context);
-    _metrics.forEach((metric) {
+    for (var metric in _metrics) {
       if (predicate.test(metric)) {
         filteredCollection.addMetric(metric);
       }
-    });
+    }
     return filteredCollection;
   }
 
@@ -175,9 +175,9 @@ class ExHierarchicalMetricCollection {
     });
 
     var sortedCollection = ExHierarchicalMetricCollection(context: context);
-    sortedMetrics.forEach((metric) {
+    for (var metric in sortedMetrics) {
       sortedCollection.addMetric(metric);
-    });
+    }
     return sortedCollection;
   }
 
