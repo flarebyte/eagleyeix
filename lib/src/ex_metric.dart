@@ -124,9 +124,10 @@ abstract class ExMetricPredicate {
 /// var newCollection = ExHierarchicalMetricCollection.fromJsonString(jsonString);
 /// ```
 class ExHierarchicalMetricCollection {
+  final Map<String, String> context;
   final List<ExHierarchicalMetric> _metrics = [];
 
-  ExHierarchicalMetricCollection();
+  ExHierarchicalMetricCollection({required this.context});
 
   /// Adds a metric to the collection.
   void addMetric(ExHierarchicalMetric metric) {
@@ -138,9 +139,11 @@ class ExHierarchicalMetricCollection {
     _metrics.clear();
   }
 
+  get metrics => _metrics;
+
   /// Clones the current collection.
   ExHierarchicalMetricCollection clone() {
-    var clonedCollection = ExHierarchicalMetricCollection();
+    var clonedCollection = ExHierarchicalMetricCollection(context: context);
     _metrics.forEach((metric) {
       clonedCollection.addMetric(metric);
     });
@@ -149,7 +152,7 @@ class ExHierarchicalMetricCollection {
 
   /// Filters the collection based on the given predicate.
   ExHierarchicalMetricCollection filter(ExMetricPredicate predicate) {
-    var filteredCollection = ExHierarchicalMetricCollection();
+    var filteredCollection = ExHierarchicalMetricCollection(context: context);
     _metrics.forEach((metric) {
       if (predicate.test(metric)) {
         filteredCollection.addMetric(metric);
@@ -171,7 +174,7 @@ class ExHierarchicalMetricCollection {
       return a.value.compareTo(b.value);
     });
 
-    var sortedCollection = ExHierarchicalMetricCollection();
+    var sortedCollection = ExHierarchicalMetricCollection(context: context);
     sortedMetrics.forEach((metric) {
       sortedCollection.addMetric(metric);
     });
@@ -181,13 +184,15 @@ class ExHierarchicalMetricCollection {
   /// Converts the collection to a JSON map.
   Map<String, dynamic> toJson() {
     return {
+      'context': context,
       'metrics': _metrics.map((metric) => metric.toJson()).toList(),
     };
   }
 
   /// Creates a collection from a JSON map.
   factory ExHierarchicalMetricCollection.fromJson(Map<String, dynamic> json) {
-    var collection = ExHierarchicalMetricCollection();
+    final context = Map<String, String>.from(json['context']);
+    var collection = ExHierarchicalMetricCollection(context: context);
     if (json['metrics'] != null) {
       json['metrics'].forEach((metricJson) {
         collection.addMetric(ExHierarchicalMetric.fromJson(metricJson));

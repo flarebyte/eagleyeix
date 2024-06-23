@@ -37,8 +37,9 @@ void main() {
   });
 
   group('ExHierarchicalMetricCollection Tests', () {
+    var context = {'device': 'mobile', 'version': '1.0.1'};
     test('Add and Clear Metrics', () {
-      var collection = ExHierarchicalMetricCollection();
+      var collection = ExHierarchicalMetricCollection(context: context);
 
       var metric1 = ExHierarchicalMetric(
         name: ['performance', 'api', 'responseTime'],
@@ -62,7 +63,7 @@ void main() {
     });
 
     test('Clone Collection', () {
-      var collection = ExHierarchicalMetricCollection();
+      var collection = ExHierarchicalMetricCollection(context: context);
 
       var metric1 = ExHierarchicalMetric(
         name: ['performance', 'api', 'responseTime'],
@@ -78,7 +79,7 @@ void main() {
     });
 
     test('Filter Collection', () {
-      var collection = ExHierarchicalMetricCollection();
+      var collection = ExHierarchicalMetricCollection(context: context);
 
       var metric1 = ExHierarchicalMetric(
         name: ['performance', 'api', 'responseTime'],
@@ -104,7 +105,7 @@ void main() {
     });
 
     test('Sort Collection', () {
-      var collection = ExHierarchicalMetricCollection();
+      var collection = ExHierarchicalMetricCollection(context: context);
 
       var metric1 = ExHierarchicalMetric(
         name: ['performance', 'api', 'responseTime'],
@@ -128,7 +129,36 @@ void main() {
       expect(sortedCollection.toJson()['metrics'][1]['name'][2],
           equals('throughput'));
     });
+
+    test('Serialization and Deserialization', () {
+      var collection = ExHierarchicalMetricCollection(context: context);
+
+      var metric1 = ExHierarchicalMetric(
+        name: ['performance', 'api', 'responseTime'],
+        dimensions: {'unit': 'ms', 'language': 'en-gb'},
+        value: 123.45,
+      );
+
+      var metric2 = ExHierarchicalMetric(
+        name: ['performance', 'api', 'throughput'],
+        dimensions: {'unit': 'requests/sec', 'language': 'en-gb'},
+        value: 67.89,
+      );
+
+      collection.addMetric(metric2);
+      collection.addMetric(metric1);
+      // Convert to JSON string
+      String jsonString = collection.toJsonString();
+
+      // Convert back from JSON string
+      var newCollection = ExHierarchicalMetricCollection.fromJsonString(jsonString);
+
+      expect(newCollection.context, equals(collection.context));
+      expect(newCollection.metrics, equals(collection.metrics));
+    });
   });
+
+
 }
 
 /// Example predicate for filtering by value.
