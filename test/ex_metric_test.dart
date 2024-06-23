@@ -151,14 +151,13 @@ void main() {
       String jsonString = collection.toJsonString();
 
       // Convert back from JSON string
-      var newCollection = ExHierarchicalMetricCollection.fromJsonString(jsonString);
+      var newCollection =
+          ExHierarchicalMetricCollection.fromJsonString(jsonString);
 
       expect(newCollection.context, equals(collection.context));
       expect(newCollection.metrics, equals(collection.metrics));
     });
   });
-
-
 }
 
 /// Example predicate for filtering by value.

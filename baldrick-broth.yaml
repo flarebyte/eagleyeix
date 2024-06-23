@@ -49,6 +49,8 @@ workflows:
             url: https://pub.dev/packages/test
         main:
           commands:
+            - title: Check dart version used by flutter
+              run:  flutter --version
             - title: Format nicely the lib source code
               run: dart format lib
             - title: Format nicely the test source code
