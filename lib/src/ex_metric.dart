@@ -16,12 +16,12 @@ import 'dart:convert';
 /// // Convert back from JSON string
 /// var newMetric = ExHierarchicalMetric.fromJsonString(jsonString);
 /// ```
-class ExHierarchicalMetric {
+class ExMetric {
   final List<String> name;
   final Map<String, String> dimensions;
   final double value;
 
-  ExHierarchicalMetric({
+  ExMetric({
     required this.name,
     required this.dimensions,
     required this.value,
@@ -37,8 +37,8 @@ class ExHierarchicalMetric {
   }
 
   /// Create an ExHierarchicalMetric instance from a JSON map.
-  factory ExHierarchicalMetric.fromJson(Map<String, dynamic> json) {
-    return ExHierarchicalMetric(
+  factory ExMetric.fromJson(Map<String, dynamic> json) {
+    return ExMetric(
       name: List<String>.from(json['name']),
       dimensions: Map<String, String>.from(json['dimensions']),
       value: json['value'],
@@ -49,9 +49,9 @@ class ExHierarchicalMetric {
   String toJsonString() => jsonEncode(toJson());
 
   /// Create an ExHierarchicalMetric instance from a JSON string.
-  factory ExHierarchicalMetric.fromJsonString(String jsonString) {
+  factory ExMetric.fromJsonString(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);
-    return ExHierarchicalMetric.fromJson(json);
+    return ExMetric.fromJson(json);
   }
 
   /// Equality operator override for comparing two ExHierarchicalMetric instances.
@@ -59,7 +59,7 @@ class ExHierarchicalMetric {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ExHierarchicalMetric &&
+    return other is ExMetric &&
         listEquals(other.name, name) &&
         mapEquals(other.dimensions, dimensions) &&
         other.value == value;
@@ -92,7 +92,7 @@ bool mapEquals(Map? map1, Map? map2) {
 
 /// Abstract class for predicate to filter metrics.
 abstract class ExMetricPredicate {
-  bool test(ExHierarchicalMetric metric);
+  bool test(ExMetric metric);
 }
 
 /// Represents a collection of hierarchical metrics.
@@ -123,14 +123,14 @@ abstract class ExMetricPredicate {
 /// // Convert back from JSON string
 /// var newCollection = ExHierarchicalMetricCollection.fromJsonString(jsonString);
 /// ```
-class ExHierarchicalMetricCollection {
+class ExMetricCollection {
   final Map<String, String> context;
-  final List<ExHierarchicalMetric> _metrics = [];
+  final List<ExMetric> _metrics = [];
 
-  ExHierarchicalMetricCollection({required this.context});
+  ExMetricCollection({required this.context});
 
   /// Adds a metric to the collection.
-  void addMetric(ExHierarchicalMetric metric) {
+  void addMetric(ExMetric metric) {
     _metrics.add(metric);
   }
 
@@ -142,8 +142,8 @@ class ExHierarchicalMetricCollection {
   get metrics => _metrics;
 
   /// Clones the current collection.
-  ExHierarchicalMetricCollection clone() {
-    var clonedCollection = ExHierarchicalMetricCollection(context: context);
+  ExMetricCollection clone() {
+    var clonedCollection = ExMetricCollection(context: context);
     for (var metric in _metrics) {
       clonedCollection.addMetric(metric);
     }
@@ -151,8 +151,8 @@ class ExHierarchicalMetricCollection {
   }
 
   /// Filters the collection based on the given predicate.
-  ExHierarchicalMetricCollection filter(ExMetricPredicate predicate) {
-    var filteredCollection = ExHierarchicalMetricCollection(context: context);
+  ExMetricCollection filter(ExMetricPredicate predicate) {
+    var filteredCollection = ExMetricCollection(context: context);
     for (var metric in _metrics) {
       if (predicate.test(metric)) {
         filteredCollection.addMetric(metric);
@@ -162,8 +162,8 @@ class ExHierarchicalMetricCollection {
   }
 
   /// Sorts the collection by name, dimensions, then value.
-  ExHierarchicalMetricCollection sorted() {
-    var sortedMetrics = List<ExHierarchicalMetric>.from(_metrics);
+  ExMetricCollection sorted() {
+    var sortedMetrics = List<ExMetric>.from(_metrics);
     sortedMetrics.sort((a, b) {
       int compareNames = _compareLists(a.name, b.name);
       if (compareNames != 0) return compareNames;
@@ -174,7 +174,7 @@ class ExHierarchicalMetricCollection {
       return a.value.compareTo(b.value);
     });
 
-    var sortedCollection = ExHierarchicalMetricCollection(context: context);
+    var sortedCollection = ExMetricCollection(context: context);
     for (var metric in sortedMetrics) {
       sortedCollection.addMetric(metric);
     }
@@ -190,12 +190,12 @@ class ExHierarchicalMetricCollection {
   }
 
   /// Creates a collection from a JSON map.
-  factory ExHierarchicalMetricCollection.fromJson(Map<String, dynamic> json) {
+  factory ExMetricCollection.fromJson(Map<String, dynamic> json) {
     final context = Map<String, String>.from(json['context']);
-    var collection = ExHierarchicalMetricCollection(context: context);
+    var collection = ExMetricCollection(context: context);
     if (json['metrics'] != null) {
       json['metrics'].forEach((metricJson) {
-        collection.addMetric(ExHierarchicalMetric.fromJson(metricJson));
+        collection.addMetric(ExMetric.fromJson(metricJson));
       });
     }
     return collection;
@@ -205,9 +205,9 @@ class ExHierarchicalMetricCollection {
   String toJsonString() => jsonEncode(toJson());
 
   /// Creates a collection from a JSON string.
-  factory ExHierarchicalMetricCollection.fromJsonString(String jsonString) {
+  factory ExMetricCollection.fromJsonString(String jsonString) {
     final Map<String, dynamic> json = jsonDecode(jsonString);
-    return ExHierarchicalMetricCollection.fromJson(json);
+    return ExMetricCollection.fromJson(json);
   }
 
   // Private helper method to compare lists

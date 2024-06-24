@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   group('ExHierarchicalMetric Tests', () {
     test('Serialization and Deserialization', () {
-      var metric = ExHierarchicalMetric(
+      var metric = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
@@ -14,19 +14,19 @@ void main() {
       String jsonString = metric.toJsonString();
 
       // Convert back from JSON string
-      var newMetric = ExHierarchicalMetric.fromJsonString(jsonString);
+      var newMetric = ExMetric.fromJsonString(jsonString);
 
       expect(newMetric, equals(metric));
     });
 
     test('Equality Check', () {
-      var metric1 = ExHierarchicalMetric(
+      var metric1 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
       );
 
-      var metric2 = ExHierarchicalMetric(
+      var metric2 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
@@ -39,15 +39,15 @@ void main() {
   group('ExHierarchicalMetricCollection Tests', () {
     var context = {'device': 'mobile', 'version': '1.0.1'};
     test('Add and Clear Metrics', () {
-      var collection = ExHierarchicalMetricCollection(context: context);
+      var collection = ExMetricCollection(context: context);
 
-      var metric1 = ExHierarchicalMetric(
+      var metric1 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
       );
 
-      var metric2 = ExHierarchicalMetric(
+      var metric2 = ExMetric(
         name: ['performance', 'api', 'throughput'],
         dimensions: {'unit': 'requests/sec', 'language': 'en-gb'},
         value: 67.89,
@@ -63,9 +63,9 @@ void main() {
     });
 
     test('Clone Collection', () {
-      var collection = ExHierarchicalMetricCollection(context: context);
+      var collection = ExMetricCollection(context: context);
 
-      var metric1 = ExHierarchicalMetric(
+      var metric1 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
@@ -79,15 +79,15 @@ void main() {
     });
 
     test('Filter Collection', () {
-      var collection = ExHierarchicalMetricCollection(context: context);
+      var collection = ExMetricCollection(context: context);
 
-      var metric1 = ExHierarchicalMetric(
+      var metric1 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
       );
 
-      var metric2 = ExHierarchicalMetric(
+      var metric2 = ExMetric(
         name: ['performance', 'api', 'throughput'],
         dimensions: {'unit': 'requests/sec', 'language': 'en-gb'},
         value: 67.89,
@@ -105,15 +105,15 @@ void main() {
     });
 
     test('Sort Collection', () {
-      var collection = ExHierarchicalMetricCollection(context: context);
+      var collection = ExMetricCollection(context: context);
 
-      var metric1 = ExHierarchicalMetric(
+      var metric1 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
       );
 
-      var metric2 = ExHierarchicalMetric(
+      var metric2 = ExMetric(
         name: ['performance', 'api', 'throughput'],
         dimensions: {'unit': 'requests/sec', 'language': 'en-gb'},
         value: 67.89,
@@ -131,15 +131,15 @@ void main() {
     });
 
     test('Serialization and Deserialization', () {
-      var collection = ExHierarchicalMetricCollection(context: context);
+      var collection = ExMetricCollection(context: context);
 
-      var metric1 = ExHierarchicalMetric(
+      var metric1 = ExMetric(
         name: ['performance', 'api', 'responseTime'],
         dimensions: {'unit': 'ms', 'language': 'en-gb'},
         value: 123.45,
       );
 
-      var metric2 = ExHierarchicalMetric(
+      var metric2 = ExMetric(
         name: ['performance', 'api', 'throughput'],
         dimensions: {'unit': 'requests/sec', 'language': 'en-gb'},
         value: 67.89,
@@ -151,8 +151,7 @@ void main() {
       String jsonString = collection.toJsonString();
 
       // Convert back from JSON string
-      var newCollection =
-          ExHierarchicalMetricCollection.fromJsonString(jsonString);
+      var newCollection = ExMetricCollection.fromJsonString(jsonString);
 
       expect(newCollection.context, equals(collection.context));
       expect(newCollection.metrics, equals(collection.metrics));
@@ -167,7 +166,7 @@ class _ValuePredicate implements ExMetricPredicate {
   _ValuePredicate(this.minValue);
 
   @override
-  bool test(ExHierarchicalMetric metric) {
+  bool test(ExMetric metric) {
     return metric.value > minValue;
   }
 }
