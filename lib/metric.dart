@@ -5,3 +5,4 @@ library;
 
 export 'src/ex_metric.dart';
 export 'src/ex_metric_key.dart';
+export 'src/ex_metric_key_value.dart';
