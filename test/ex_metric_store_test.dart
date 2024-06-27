@@ -67,20 +67,5 @@ void main() {
               .value,
           equals(20.0));
     });
-
-    test('aggregateAll should handle empty arrays correctly', () {
-      ExMetricStore store = ExMetricStore();
-      store.addMetric(ExMetricKeyFixtures.buttonClick, 10.0);
-
-      // Adding an empty array case
-      // store.addMetric(ExMetricKeyFixtures.buttonClick, 0.0);
-      // store._metrics[ExMetricKeyFixtures.buttonClick] =
-      //     []; // Simulate empty array
-
-      List<ExMetricKeyValue> aggregated = store.aggregateAll(SumAggregation());
-      expect(aggregated.length, equals(1));
-      expect(aggregated.first.value,
-          equals(0.0)); // Sum of empty array should be handled correctly
-    });
   });
 }

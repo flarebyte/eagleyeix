@@ -1,4 +1,4 @@
-import '../metric.dart';
+import 'ex_metric_key.dart';
 
 /// A class representing a metric key-value pair, consisting of an [ExMetricKey] and a double value.
 /// Provides methods for comparing instances and serializing to JSON.

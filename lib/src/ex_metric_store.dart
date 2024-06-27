@@ -1,12 +1,6 @@
+import 'ex_abstract_model.dart';
 import 'ex_metric_key.dart';
 import 'ex_metric_key_value.dart';
-
-/// Abstract class representing a metric aggregation strategy.
-/// Provides a method for aggregating metrics.
-abstract class ExMetricAggregation {
-  /// Aggregates a map entry of [ExMetricKey] and [double[]] and returns a list of [ExMetricKeyValue].
-  List<ExMetricKeyValue> aggregate(MapEntry<ExMetricKey, List<double>> entry);
-}
 
 /// A class representing a store of metrics, using a map of [ExMetricKey] to [double[]].
 /// Provides methods for adding metrics and aggregating them.
