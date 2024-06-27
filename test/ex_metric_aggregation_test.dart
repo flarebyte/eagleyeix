@@ -124,6 +124,64 @@ void main() {
         expect(result.first.key.dimensions['quantile'], quantile.toString());
         expect(result.first.value, 7.5);
       });
+      test('ExMetricMode aggregate - single mode', () {
+        final exMetricMode = ExMetricAggregations.mode(
+          preCondition: preCondition,
+          postCondition: postCondition,
+          shrinker: shrinker,
+          additionalDimensions: additionalDimensions,
+        );
+
+        final entry = MapEntry(key, [1.0, 2.0, 2.0, 3.0, 4.0]);
+        final result = exMetricMode.aggregate(entry);
+
+        expect(result.length, 1);
+        expect(result.first.key.name[0], 'metric');
+        expect(result.first.key.dimensions['region'], 'us');
+        expect(result.first.key.dimensions['source'], 'test');
+        expect(result.first.key.dimensions['aggregation'], 'mode');
+        expect(result.first.value, 2.0);
+      });
+
+      test('ExMetricMode aggregate - multiple modes', () {
+        final exMetricMode = ExMetricAggregations.mode(
+          preCondition: preCondition,
+          postCondition: postCondition,
+          shrinker: shrinker,
+          additionalDimensions: additionalDimensions,
+        );
+
+        final entry = MapEntry(key, [1.0, 2.0, 2.0, 3.0, 3.0, 4.0]);
+        final result = exMetricMode.aggregate(entry);
+
+        // If there are multiple modes, we can check for one of the expected values.
+        expect(result.length, 1);
+        expect(result.first.key.name[0], 'metric');
+        expect(result.first.key.dimensions['region'], 'us');
+        expect(result.first.key.dimensions['source'], 'test');
+        expect(result.first.key.dimensions['aggregation'], 'mode');
+        expect([2.0, 3.0].contains(result.first.value), isTrue);
+      });
+
+      test('ExMetricMode aggregate - no mode (all unique)', () {
+        final exMetricMode = ExMetricAggregations.mode(
+          preCondition: preCondition,
+          postCondition: postCondition,
+          shrinker: shrinker,
+          additionalDimensions: additionalDimensions,
+        );
+
+        final entry = MapEntry(key, [1.0, 2.0, 3.0, 4.0, 5.0]);
+        final result = exMetricMode.aggregate(entry);
+
+        // With no repeating values, we should check for the first element as a default mode.
+        expect(result.length, 1);
+        expect(result.first.key.name[0], 'metric');
+        expect(result.first.key.dimensions['region'], 'us');
+        expect(result.first.key.dimensions['source'], 'test');
+        expect(result.first.key.dimensions['aggregation'], 'mode');
+        expect(result.first.value, 1.0);
+      });
     });
   });
 }

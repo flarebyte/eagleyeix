@@ -192,6 +192,42 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+class ExMetricMode extends ExMetricAggregation with ExMetricFilterMixin {
+  ExMetricMode({
+    required ExMetricFilter preCondition,
+    required ExMetricKeyValueFilter postCondition,
+    required ExMetricDoubleShrinker shrinker,
+    Map<String, String>? additionalDimensions,
+  }) {
+    this.preCondition = preCondition;
+    this.postCondition = postCondition;
+    this.shrinker = shrinker;
+    this.additionalDimensions = additionalDimensions ?? {};
+  }
+
+  @override
+  List<ExMetricKeyValue> aggregate(MapEntry<ExMetricKey, List<double>> entry) {
+    return aggregateMetric(
+      entry,
+      (values) {
+        if (values.isEmpty) return 0.0;
+
+        final frequencyMap = <double, int>{};
+        for (var value in values) {
+          frequencyMap[value] = (frequencyMap[value] ?? 0) + 1;
+        }
+
+        final mode = frequencyMap.entries
+            .reduce((a, b) => a.value > b.value ? a : b)
+            .key;
+
+        return mode;
+      },
+      {'aggregation': 'mode'},
+    );
+  }
+}
+
 class ExMetricAggregations {
   static ExMetricSum sum({
     required ExMetricFilter preCondition,
@@ -242,6 +278,20 @@ class ExMetricAggregations {
     Map<String, String>? additionalDimensions,
   }) {
     return ExMetricMedian(
+      preCondition: preCondition,
+      postCondition: postCondition,
+      shrinker: shrinker,
+      additionalDimensions: additionalDimensions,
+    );
+  }
+
+  static ExMetricMode mode({
+    required ExMetricFilter preCondition,
+    required ExMetricKeyValueFilter postCondition,
+    required ExMetricDoubleShrinker shrinker,
+    Map<String, String>? additionalDimensions,
+  }) {
+    return ExMetricMode(
       preCondition: preCondition,
       postCondition: postCondition,
       shrinker: shrinker,
