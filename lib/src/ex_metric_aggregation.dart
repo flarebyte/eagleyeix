@@ -173,16 +173,18 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
       (values) {
         if (values.isEmpty) return 0.0;
         final sortedValues = List<double>.from(values)..sort();
-        final position = (sortedValues.length - 1) * quantile;
-        final lowerIndex = position.floor();
-        final upperIndex = position.ceil();
-        if (lowerIndex == upperIndex) {
-          return sortedValues[lowerIndex];
+        final n = sortedValues.length;
+        final position = quantile * n;
+        final index = position.floor() - 1;
+
+        if (index < 0) {
+          return sortedValues.first;
+        } else if (index >= n - 1) {
+          return sortedValues.last;
         } else {
-          final lowerValue = sortedValues[lowerIndex];
-          final upperValue = sortedValues[upperIndex];
-          return lowerValue +
-              (upperValue - lowerValue) * (position - lowerIndex);
+          final lowerValue = sortedValues[index];
+          final upperValue = sortedValues[index + 1];
+          return (lowerValue + upperValue) / 2.0;
         }
       },
       {'aggregation': 'quantile', 'quantile': quantile.toString()},

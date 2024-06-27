@@ -1,10 +1,6 @@
 import 'package:eagleyeix/metric.dart';
 import 'package:test/test.dart';
 
-import 'package:test/test.dart';
-
-// Assuming the necessary imports for ExMetricSum, ExMetricCount, ExMetricAvg, ExMetricMedian, ExMetricQuantile, ExMetricAggregations, etc.
-
 class MockExMetricFilter extends ExMetricFilter {
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) => true;
@@ -116,7 +112,8 @@ void main() {
           additionalDimensions: additionalDimensions,
         );
 
-        final entry = MapEntry(key, [1.0, 3.0, 2.0, 4.0]);
+        final entry =
+            MapEntry(key, [3.0, 7.0, 8.0, 2.0, 10.0, 1.0, 5.0, 4.0, 9.0, 6.0]);
         final result = exMetricQuantile.aggregate(entry);
 
         expect(result.length, 1);
@@ -125,7 +122,7 @@ void main() {
         expect(result.first.key.dimensions['source'], 'test');
         expect(result.first.key.dimensions['aggregation'], 'quantile');
         expect(result.first.key.dimensions['quantile'], quantile.toString());
-        expect(result.first.value, 3.5);
+        expect(result.first.value, 7.5);
       });
     });
   });
