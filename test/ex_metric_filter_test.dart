@@ -75,4 +75,104 @@ void main() {
       expect(filter.matches(entry), isFalse);
     });
   });
+
+  group('ExMetricKeyValueFilters', () {
+    final key = ExMetricKey(
+        name: ['metric1'], dimensions: {'region': 'us', 'env': 'prod'});
+
+    test('ExValueEqual matches correctly', () {
+      final filter = ExMetricKeyValueFilters.valueEqual(10.0);
+      final keyValue = ExMetricKeyValue(key: key, value: 10.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 5.0)), isFalse);
+    });
+
+    test('ExValueMoreThan matches correctly', () {
+      final filter = ExMetricKeyValueFilters.valueMoreThan(10.0);
+      final keyValue = ExMetricKeyValue(key: key, value: 15.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 10.0)), isFalse);
+    });
+
+    test('ExValueLessThan matches correctly', () {
+      final filter = ExMetricKeyValueFilters.valueLessThan(10.0);
+      final keyValue = ExMetricKeyValue(key: key, value: 5.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 10.0)), isFalse);
+    });
+
+    test('ExValueMoreThanOrEqual matches correctly', () {
+      final filter = ExMetricKeyValueFilters.valueMoreThanOrEqual(10.0);
+      final keyValue = ExMetricKeyValue(key: key, value: 10.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 5.0)), isFalse);
+    });
+
+    test('ExValueLessThanOrEqual matches correctly', () {
+      final filter = ExMetricKeyValueFilters.valueLessThanOrEqual(10.0);
+      final keyValue = ExMetricKeyValue(key: key, value: 10.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 15.0)), isFalse);
+    });
+
+    test('ExMetricKeyValueOr matches correctly', () {
+      final filter = ExMetricKeyValueFilters.or([
+        ExMetricKeyValueFilters.valueMoreThan(10.0),
+        ExMetricKeyValueFilters.valueEqual(5.0),
+      ]);
+      final keyValue1 = ExMetricKeyValue(key: key, value: 15.0);
+      final keyValue2 = ExMetricKeyValue(key: key, value: 5.0);
+
+      expect(filter.matches(keyValue1), isTrue);
+      expect(filter.matches(keyValue2), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 2.0)), isFalse);
+    });
+
+    test('ExMetricKeyValueAnd matches correctly', () {
+      final filter = ExMetricKeyValueFilters.and([
+        ExMetricKeyValueFilters.valueMoreThan(10.0),
+        ExMetricKeyValueFilters.valueLessThanOrEqual(20.0),
+      ]);
+      final keyValue = ExMetricKeyValue(key: key, value: 15.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 25.0)), isFalse);
+    });
+
+    test('ExMetricKeyValueNot matches correctly', () {
+      final filter =
+          ExMetricKeyValueFilters.not(ExMetricKeyValueFilters.valueEqual(10.0));
+      final keyValue = ExMetricKeyValue(key: key, value: 5.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 10.0)), isFalse);
+    });
+
+    test('ExFilterByAnyDimension matches correctly', () {
+      final filter =
+          ExMetricKeyValueFilters.filterByAnyDimension(['region', 'zone']);
+      final keyValue = ExMetricKeyValue(key: key, value: 10.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(
+          filter.matches(ExMetricKeyValue(
+              key:
+                  ExMetricKey(name: ['metric2'], dimensions: {'country': 'us'}),
+              value: 10.0)),
+          isFalse);
+    });
+
+    test('ExMetricKeyValueTrue always matches', () {
+      final filter = ExMetricKeyValueFilters.alwaysTrue();
+      final keyValue = ExMetricKeyValue(key: key, value: 10.0);
+
+      expect(filter.matches(keyValue), isTrue);
+      expect(filter.matches(ExMetricKeyValue(key: key, value: 5.0)), isTrue);
+    });
+  });
 }
