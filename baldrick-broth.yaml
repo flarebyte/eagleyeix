@@ -2,13 +2,19 @@
 model:
   project:
     title: Eagleyeix the Dart library for sharper observations and smarter reactions
-    description: Observe
+    description: Eagleyeix is a metrics logger that collects and records numerical data representing system performance or application behaviour, typically in key-value pairs. Unlike general loggers, it focuses solely on metrics such as CPU usage, memory consumption, request rates, and business KPIs.
     version: 0.3.0
     keywords:
       - observer
+      - metric
+      - logger
+      - privacy
   readme:
     highlights:
-      - Observe
+      - Collect numerical data representing system performance or application behaviour.
+      - Ensure higher user privacy by aggregating the data. Aggregation involves combining individual data points into broader summaries.
+      - To improve privacy, metric data can be stored as orders of magnitude.
+      - Metrics data can be exported as JSON
     links:
       - "[Dart dependencies](DEPENDENCIES.md)"
       - "[Usage](USAGE.md)"
@@ -50,7 +56,7 @@ workflows:
         main:
           commands:
             - title: Check dart version used by flutter
-              run:  flutter --version
+              run: flutter --version
             - title: Format nicely the lib source code
               run: dart format lib
             - title: Format nicely the test source code
