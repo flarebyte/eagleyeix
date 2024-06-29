@@ -1,6 +1,4 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// Provide metrics that measure different aspect of the user experience.
 library;
 
 export 'src/ex_metric_key.dart';

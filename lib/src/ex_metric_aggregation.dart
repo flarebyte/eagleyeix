@@ -4,20 +4,24 @@ import 'ex_metric_key.dart';
 import 'ex_metric_key_value.dart';
 import 'ex_metric_shrinker.dart';
 
+/// Mixin for applying metric pre conditions, post conditions and metric shrinkers
 mixin ExMetricFilterMixin {
   late final ExMetricFilter preCondition;
   late final ExMetricKeyValueFilter postCondition;
   late final ExMetricDoubleShrinker shrinker;
   late final Map<String, String> additionalDimensions;
 
+  /// Applies the metric pre condition to the given entry
   bool applyPreCondition(MapEntry<ExMetricKey, List<double>> entry) {
     return preCondition.matches(entry);
   }
 
+  /// Applies the metric post condition to the given list of entries
   List<ExMetricKeyValue> applyPostCondition(List<ExMetricKeyValue> keyValues) {
     return keyValues.where(postCondition.matches).toList();
   }
 
+  /// Add a dimension to the given metric (ex: 'country' => 'US')
   ExMetricKey addDimensions(
       ExMetricKey key, Map<String, String> additionalDimensions) {
     final updatedDimensions = Map<String, String>.from(key.dimensions)
@@ -25,10 +29,12 @@ mixin ExMetricFilterMixin {
     return ExMetricKey(name: key.name, dimensions: updatedDimensions);
   }
 
+  /// Applies the metric shrinker to the given value
   double applyShrinker(double value) {
     return shrinker.shrink(value);
   }
 
+  /// Aggregates the given metric values. In other words, it takes the given metric values and returns a single value.
   List<ExMetricKeyValue> aggregateMetric(
       MapEntry<ExMetricKey, List<double>> entry,
       double Function(List<double>) aggregator,
@@ -48,6 +54,7 @@ mixin ExMetricFilterMixin {
   }
 }
 
+/// A metric that counts the number of entries.
 class ExMetricCount extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricCount({
     ExMetricFilter? preCondition,
@@ -71,6 +78,7 @@ class ExMetricCount extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+/// A metric that sums the entries.
 class ExMetricSum extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricSum({
     ExMetricFilter? preCondition,
@@ -94,6 +102,7 @@ class ExMetricSum extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+/// A metric that averages the entries.
 class ExMetricAvg extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricAvg({
     ExMetricFilter? preCondition,
@@ -118,6 +127,7 @@ class ExMetricAvg extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+/// A metric that returns the median of the entries.
 class ExMetricMedian extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricMedian({
     ExMetricFilter? preCondition,
@@ -150,6 +160,7 @@ class ExMetricMedian extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+/// A metric that returns the quantile of the entries.
 class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
   final double quantile;
 
@@ -194,7 +205,9 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+/// Sugar syntax for constructing aggregations.
 class ExMetricAggregations {
+  /// Sums the values of a metric.
   static ExMetricSum sum({
     ExMetricFilter? preCondition,
     ExMetricKeyValueFilter? postCondition,
@@ -209,6 +222,7 @@ class ExMetricAggregations {
     );
   }
 
+  ///
   static ExMetricCount count({
     ExMetricFilter? preCondition,
     ExMetricKeyValueFilter? postCondition,
@@ -223,6 +237,7 @@ class ExMetricAggregations {
     );
   }
 
+  /// Averages the values of a metric.
   static ExMetricAvg average({
     ExMetricFilter? preCondition,
     ExMetricKeyValueFilter? postCondition,
@@ -237,6 +252,7 @@ class ExMetricAggregations {
     );
   }
 
+  /// Median of the values of a metric.
   static ExMetricMedian median({
     ExMetricFilter? preCondition,
     ExMetricKeyValueFilter? postCondition,
@@ -251,6 +267,7 @@ class ExMetricAggregations {
     );
   }
 
+  /// Quantile of the values of a metric.
   static ExMetricQuantile quantile({
     required double quantile,
     ExMetricFilter? preCondition,

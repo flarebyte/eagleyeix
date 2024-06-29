@@ -5,15 +5,17 @@ import 'package:eagleyeix/src/ex_abstract_model.dart';
 /// Class that implements ExMetricDoubleShrinker and applies a logarithmic
 /// transformation based on a specified base.
 class ExMetricLogShrinker implements ExMetricDoubleShrinker {
-  final int base;
-  final int start;
+  late final int base;
+  late final int start;
 
   /// Constructor to initialize the base and start fields.
   ExMetricLogShrinker({
-    required this.base,
-    required this.start,
+    int? base,
+    int? start,
   }) {
-    if (base <= 1) {
+    this.base = base ?? 10;
+    this.start = start ?? 0;
+    if (this.base <= 1) {
       throw ArgumentError(
           'Base must be greater than one for logarithmic transformation.');
     }
@@ -45,10 +47,12 @@ class ExMetricPassShrinker implements ExMetricDoubleShrinker {
 
 /// Class that implements ExMetricDoubleShrinker and returns the floor value plus the start.
 class ExMetricFloorShrinker implements ExMetricDoubleShrinker {
-  final int start;
+  late final int start;
 
   /// Constructor to initialize the start field.
-  ExMetricFloorShrinker({required this.start});
+  ExMetricFloorShrinker({int? start}) {
+    this.start = start ?? 0;
+  }
 
   @override
   double shrink(double value) {
@@ -58,10 +62,12 @@ class ExMetricFloorShrinker implements ExMetricDoubleShrinker {
 
 /// Class that implements ExMetricDoubleShrinker and returns the ceiling value plus the start.
 class ExMetricCeilShrinker implements ExMetricDoubleShrinker {
-  final int start;
+  late final int start;
 
   /// Constructor to initialize the start field.
-  ExMetricCeilShrinker({required this.start});
+  ExMetricCeilShrinker({int? start}) {
+    this.start = start ?? 0;
+  }
 
   @override
   double shrink(double value) {
@@ -73,7 +79,7 @@ class ExMetricCeilShrinker implements ExMetricDoubleShrinker {
 /// of different ExMetricDoubleShrinker implementations.
 class ExMetricDoubleShrinkers {
   /// Factory method to create an instance of ExMetricLogShrinker.
-  static ExMetricLogShrinker log({required int base, required int start}) {
+  static ExMetricLogShrinker log({int? base, int? start}) {
     return ExMetricLogShrinker(base: base, start: start);
   }
 
@@ -83,12 +89,12 @@ class ExMetricDoubleShrinkers {
   }
 
   /// Factory method to create an instance of ExMetricFloorShrinker.
-  static ExMetricFloorShrinker floor({required int start}) {
+  static ExMetricFloorShrinker floor({int? start}) {
     return ExMetricFloorShrinker(start: start);
   }
 
   /// Factory method to create an instance of ExMetricCeilShrinker.
-  static ExMetricCeilShrinker ceil({required int start}) {
+  static ExMetricCeilShrinker ceil({int? start}) {
     return ExMetricCeilShrinker(start: start);
   }
 }
