@@ -68,4 +68,22 @@ void main() {
           equals(20.0));
     });
   });
+  group('ExMetricStoreHolder', () {
+    test('initializes with a new ExMetricStore instance', () {
+      final storeHolder = ExMetricStoreHolder();
+
+      expect(storeHolder.store, isA<ExMetricStore>());
+    });
+
+    test('creates a new store with createNewStore', () {
+      final storeHolder = ExMetricStoreHolder();
+      final initialStore = storeHolder.store;
+
+      storeHolder.createNewStore();
+      final newStore = storeHolder.store;
+
+      expect(newStore, isA<ExMetricStore>());
+      expect(newStore, isNot(equals(initialStore)));
+    });
+  });
 }

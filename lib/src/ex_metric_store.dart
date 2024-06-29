@@ -39,3 +39,28 @@ class ExMetricStore {
     return result;
   }
 }
+
+/// A class that holds an instance of `ExMetricStore`.
+///
+/// The `ExMetricStoreHolder` class provides access to an `ExMetricStore` instance
+/// and allows for the creation of a new store.
+class ExMetricStoreHolder {
+  ExMetricStore _store;
+
+  /// Creates an `ExMetricStoreHolder` with a new instance of `ExMetricStore`.
+  ///
+  /// This constructor initializes the `_store` field with a new instance of `ExMetricStore`.
+  ExMetricStoreHolder() : _store = ExMetricStore();
+
+  /// Gets the current `ExMetricStore` instance.
+  ///
+  /// Use this property to access the current `ExMetricStore` instance held by this class.
+  ExMetricStore get store => _store;
+
+  /// Creates a new `ExMetricStore` instance and overwrites the existing store.
+  ///
+  /// This method replaces the current `_store` with a new instance of `ExMetricStore`.
+  void createNewStore() {
+    _store = ExMetricStore();
+  }
+}
