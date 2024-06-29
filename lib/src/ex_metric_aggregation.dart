@@ -1,12 +1,14 @@
 import 'ex_abstract_model.dart';
+import 'ex_metric_filter.dart';
 import 'ex_metric_key.dart';
 import 'ex_metric_key_value.dart';
+import 'ex_metric_shrinker.dart';
 
 mixin ExMetricFilterMixin {
-  late ExMetricFilter preCondition;
-  late ExMetricKeyValueFilter postCondition;
-  late ExMetricDoubleShrinker shrinker;
-  late Map<String, String> additionalDimensions;
+  late final ExMetricFilter preCondition;
+  late final ExMetricKeyValueFilter postCondition;
+  late final ExMetricDoubleShrinker shrinker;
+  late final Map<String, String> additionalDimensions;
 
   bool applyPreCondition(MapEntry<ExMetricKey, List<double>> entry) {
     return preCondition.matches(entry);
@@ -48,14 +50,14 @@ mixin ExMetricFilterMixin {
 
 class ExMetricCount extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricCount({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
-    this.preCondition = preCondition;
-    this.postCondition = postCondition;
-    this.shrinker = shrinker;
+    this.preCondition = preCondition ?? ExMetricFilters.notEmpty();
+    this.postCondition = postCondition ?? ExMetricKeyValueFilters.alwaysTrue();
+    this.shrinker = shrinker ?? ExMetricDoubleShrinkers.pass();
     this.additionalDimensions = additionalDimensions ?? {};
   }
 
@@ -71,14 +73,14 @@ class ExMetricCount extends ExMetricAggregation with ExMetricFilterMixin {
 
 class ExMetricSum extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricSum({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
-    this.preCondition = preCondition;
-    this.postCondition = postCondition;
-    this.shrinker = shrinker;
+    this.preCondition = preCondition ?? ExMetricFilters.notEmpty();
+    this.postCondition = postCondition ?? ExMetricKeyValueFilters.alwaysTrue();
+    this.shrinker = shrinker ?? ExMetricDoubleShrinkers.pass();
     this.additionalDimensions = additionalDimensions ?? {};
   }
 
@@ -94,14 +96,14 @@ class ExMetricSum extends ExMetricAggregation with ExMetricFilterMixin {
 
 class ExMetricAvg extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricAvg({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
-    this.preCondition = preCondition;
-    this.postCondition = postCondition;
-    this.shrinker = shrinker;
+    this.preCondition = preCondition ?? ExMetricFilters.notEmpty();
+    this.postCondition = postCondition ?? ExMetricKeyValueFilters.alwaysTrue();
+    this.shrinker = shrinker ?? ExMetricDoubleShrinkers.pass();
     this.additionalDimensions = additionalDimensions ?? {};
   }
 
@@ -118,14 +120,14 @@ class ExMetricAvg extends ExMetricAggregation with ExMetricFilterMixin {
 
 class ExMetricMedian extends ExMetricAggregation with ExMetricFilterMixin {
   ExMetricMedian({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
-    this.preCondition = preCondition;
-    this.postCondition = postCondition;
-    this.shrinker = shrinker;
+    this.preCondition = preCondition ?? ExMetricFilters.notEmpty();
+    this.postCondition = postCondition ?? ExMetricKeyValueFilters.alwaysTrue();
+    this.shrinker = shrinker ?? ExMetricDoubleShrinkers.pass();
     this.additionalDimensions = additionalDimensions ?? {};
   }
 
@@ -153,16 +155,16 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
 
   ExMetricQuantile({
     required this.quantile,
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
     assert(
         quantile >= 0.0 && quantile <= 1.0, 'Quantile must be between 0 and 1');
-    this.preCondition = preCondition;
-    this.postCondition = postCondition;
-    this.shrinker = shrinker;
+    this.preCondition = preCondition ?? ExMetricFilters.notEmpty();
+    this.postCondition = postCondition ?? ExMetricKeyValueFilters.alwaysTrue();
+    this.shrinker = shrinker ?? ExMetricDoubleShrinkers.pass();
     this.additionalDimensions = additionalDimensions ?? {};
   }
 
@@ -194,9 +196,9 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
 
 class ExMetricAggregations {
   static ExMetricSum sum({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
     return ExMetricSum(
@@ -208,9 +210,9 @@ class ExMetricAggregations {
   }
 
   static ExMetricCount count({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
     return ExMetricCount(
@@ -222,9 +224,9 @@ class ExMetricAggregations {
   }
 
   static ExMetricAvg average({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
     return ExMetricAvg(
@@ -236,9 +238,9 @@ class ExMetricAggregations {
   }
 
   static ExMetricMedian median({
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
     return ExMetricMedian(
@@ -251,9 +253,9 @@ class ExMetricAggregations {
 
   static ExMetricQuantile quantile({
     required double quantile,
-    required ExMetricFilter preCondition,
-    required ExMetricKeyValueFilter postCondition,
-    required ExMetricDoubleShrinker shrinker,
+    ExMetricFilter? preCondition,
+    ExMetricKeyValueFilter? postCondition,
+    ExMetricDoubleShrinker? shrinker,
     Map<String, String>? additionalDimensions,
   }) {
     return ExMetricQuantile(
