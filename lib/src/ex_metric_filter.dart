@@ -3,7 +3,7 @@ import 'ex_metric_key.dart';
 import 'ex_metric_key_value.dart';
 
 /// A filter strategy that checks if the list of doubles is not empty.
-class ExNotEmptyFilter extends ExMetricFilter {
+class ExNotEmptyPreCond extends ExPreCondition {
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) {
     return entry.value.isNotEmpty;
@@ -11,11 +11,11 @@ class ExNotEmptyFilter extends ExMetricFilter {
 }
 
 /// A filter strategy that checks if the list of doubles has more than [threshold] elements.
-class ExMoreThanFilter extends ExMetricFilter {
+class ExMoreThanPreCond extends ExPreCondition {
   final int threshold;
 
-  /// Constructs an [ExMoreThanFilter] instance with the given threshold.
-  ExMoreThanFilter(this.threshold);
+  /// Constructs an [ExMoreThanPreCond] instance with the given threshold.
+  ExMoreThanPreCond(this.threshold);
 
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) {
@@ -24,11 +24,11 @@ class ExMoreThanFilter extends ExMetricFilter {
 }
 
 /// A filter strategy that checks if the list of doubles has fewer than [threshold] elements.
-class ExLessThanFilter extends ExMetricFilter {
+class ExLessThanPreCond extends ExPreCondition {
   final int threshold;
 
-  /// Constructs an [ExLessThanFilter] instance with the given threshold.
-  ExLessThanFilter(this.threshold);
+  /// Constructs an [ExLessThanPreCond] instance with the given threshold.
+  ExLessThanPreCond(this.threshold);
 
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) {
@@ -37,11 +37,11 @@ class ExLessThanFilter extends ExMetricFilter {
 }
 
 /// A filter strategy that checks if the list of doubles has more than or equal to [threshold] elements.
-class ExMoreThanOrEqualFilter extends ExMetricFilter {
+class ExMoreThanOrEqualPreCond extends ExPreCondition {
   final int threshold;
 
-  /// Constructs an [ExMoreThanOrEqualFilter] instance with the given threshold.
-  ExMoreThanOrEqualFilter(this.threshold);
+  /// Constructs an [ExMoreThanOrEqualPreCond] instance with the given threshold.
+  ExMoreThanOrEqualPreCond(this.threshold);
 
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) {
@@ -50,11 +50,11 @@ class ExMoreThanOrEqualFilter extends ExMetricFilter {
 }
 
 /// A filter strategy that checks if the list of doubles has fewer than or equal to [threshold] elements.
-class ExLessThanOrEqualFilter extends ExMetricFilter {
+class ExLessThanOrEqualPreCond extends ExPreCondition {
   final int threshold;
 
-  /// Constructs an [ExLessThanOrEqualFilter] instance with the given threshold.
-  ExLessThanOrEqualFilter(this.threshold);
+  /// Constructs an [ExLessThanOrEqualPreCond] instance with the given threshold.
+  ExLessThanOrEqualPreCond(this.threshold);
 
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) {
@@ -63,35 +63,35 @@ class ExLessThanOrEqualFilter extends ExMetricFilter {
 }
 
 /// A static utility class for creating various metric filters.
-class ExMetricFilters {
-  /// Creates an [ExMoreThanFilter] with the given [threshold].
-  static ExMoreThanFilter moreThan(int threshold) {
-    return ExMoreThanFilter(threshold);
+class ExPreConditions {
+  /// Creates an [ExMoreThanPreCond] with the given [threshold].
+  static ExMoreThanPreCond moreThan(int threshold) {
+    return ExMoreThanPreCond(threshold);
   }
 
-  /// Creates an [ExLessThanFilter] with the given [threshold].
-  static ExLessThanFilter lessThan(int threshold) {
-    return ExLessThanFilter(threshold);
+  /// Creates an [ExLessThanPreCond] with the given [threshold].
+  static ExLessThanPreCond lessThan(int threshold) {
+    return ExLessThanPreCond(threshold);
   }
 
-  /// Creates an [ExMoreThanOrEqualFilter] with the given [threshold].
-  static ExMoreThanOrEqualFilter moreThanOrEqual(int threshold) {
-    return ExMoreThanOrEqualFilter(threshold);
+  /// Creates an [ExMoreThanOrEqualPreCond] with the given [threshold].
+  static ExMoreThanOrEqualPreCond moreThanOrEqual(int threshold) {
+    return ExMoreThanOrEqualPreCond(threshold);
   }
 
-  /// Creates an [ExLessThanOrEqualFilter] with the given [threshold].
-  static ExLessThanOrEqualFilter lessThanOrEqual(int threshold) {
-    return ExLessThanOrEqualFilter(threshold);
+  /// Creates an [ExLessThanOrEqualPreCond] with the given [threshold].
+  static ExLessThanOrEqualPreCond lessThanOrEqual(int threshold) {
+    return ExLessThanOrEqualPreCond(threshold);
   }
 
-  /// Creates an [ExNotEmptyFilter].
-  static ExNotEmptyFilter notEmpty() {
-    return ExNotEmptyFilter();
+  /// Creates an [ExNotEmptyPreCond].
+  static ExNotEmptyPreCond notEmpty() {
+    return ExNotEmptyPreCond();
   }
 }
 
-/// Class that extends [ExMetricKeyValueFilter] and always returns true for the matches method.
-class ExMetricKeyValueTrue extends ExMetricKeyValueFilter {
+/// Class that extends [ExPostCondition] and always returns true for the matches method.
+class ExPostCondTrue extends ExPostCondition {
   @override
   bool matches(ExMetricKeyValue keyValue) {
     return true;
@@ -99,7 +99,7 @@ class ExMetricKeyValueTrue extends ExMetricKeyValueFilter {
 }
 
 /// Class that filters by any given dimension.
-class ExFilterByAnyDimension extends ExMetricKeyValueFilter {
+class ExFilterByAnyDimension extends ExPostCondition {
   /// List of dimensions to filter by.
   final List<String> filterDimensions;
 
@@ -120,12 +120,12 @@ class ExFilterByAnyDimension extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if all given filters match.
-class ExMetricKeyValueAnd extends ExMetricKeyValueFilter {
+class ExPostCondAnd extends ExPostCondition {
   /// List of filters to apply.
-  final List<ExMetricKeyValueFilter> filters;
+  final List<ExPostCondition> filters;
 
-  /// Constructs an [ExMetricKeyValueAnd] instance with the given [filters].
-  ExMetricKeyValueAnd({
+  /// Constructs an [ExPostCondAnd] instance with the given [filters].
+  ExPostCondAnd({
     required this.filters,
   });
 
@@ -141,12 +141,12 @@ class ExMetricKeyValueAnd extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if any given filter matches.
-class ExMetricKeyValueOr extends ExMetricKeyValueFilter {
+class ExPostCondOr extends ExPostCondition {
   /// List of filters to apply.
-  final List<ExMetricKeyValueFilter> filters;
+  final List<ExPostCondition> filters;
 
-  /// Constructs an [ExMetricKeyValueOr] instance with the given [filters].
-  ExMetricKeyValueOr({
+  /// Constructs an [ExPostCondOr] instance with the given [filters].
+  ExPostCondOr({
     required this.filters,
   });
 
@@ -162,12 +162,12 @@ class ExMetricKeyValueOr extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if the given filter does not match.
-class ExMetricKeyValueNot extends ExMetricKeyValueFilter {
+class ExPostCondNot extends ExPostCondition {
   /// The filter to apply.
-  final ExMetricKeyValueFilter filter;
+  final ExPostCondition filter;
 
-  /// Constructs an [ExMetricKeyValueNot] instance with the given [filter].
-  ExMetricKeyValueNot({
+  /// Constructs an [ExPostCondNot] instance with the given [filter].
+  ExPostCondNot({
     required this.filter,
   });
 
@@ -178,7 +178,7 @@ class ExMetricKeyValueNot extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if the value is more than a given threshold.
-class ExValueMoreThan extends ExMetricKeyValueFilter {
+class ExValueMoreThan extends ExPostCondition {
   /// The threshold value to compare against.
   final double threshold;
 
@@ -194,7 +194,7 @@ class ExValueMoreThan extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if the value is less than a given threshold.
-class ExValueLessThan extends ExMetricKeyValueFilter {
+class ExValueLessThan extends ExPostCondition {
   /// The threshold value to compare against.
   final double threshold;
 
@@ -210,7 +210,7 @@ class ExValueLessThan extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if the value is more than or equal to a given threshold.
-class ExValueMoreThanOrEqual extends ExMetricKeyValueFilter {
+class ExValueMoreThanOrEqual extends ExPostCondition {
   /// The threshold value to compare against.
   final double threshold;
 
@@ -226,7 +226,7 @@ class ExValueMoreThanOrEqual extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if the value is less than or equal to a given threshold.
-class ExValueLessThanOrEqual extends ExMetricKeyValueFilter {
+class ExValueLessThanOrEqual extends ExPostCondition {
   /// The threshold value to compare against.
   final double threshold;
 
@@ -242,7 +242,7 @@ class ExValueLessThanOrEqual extends ExMetricKeyValueFilter {
 }
 
 /// Class that matches if the value is equal to a given threshold.
-class ExValueEqual extends ExMetricKeyValueFilter {
+class ExValueEqual extends ExPostCondition {
   /// The threshold value to compare against.
   final double threshold;
 
@@ -257,55 +257,55 @@ class ExValueEqual extends ExMetricKeyValueFilter {
   }
 }
 
-/// A utility class for creating various [ExMetricKeyValueFilter] instances.
-class ExMetricKeyValueFilters {
+/// A utility class for creating various [ExPostCondition] instances.
+class ExPostConditions {
   /// Creates a filter that matches if the value is equal to the given [threshold].
-  static ExMetricKeyValueFilter valueEqual(double threshold) {
+  static ExPostCondition valueEqual(double threshold) {
     return ExValueEqual(threshold: threshold);
   }
 
   /// Creates a filter that matches if the value is more than the given [threshold].
-  static ExMetricKeyValueFilter valueMoreThan(double threshold) {
+  static ExPostCondition valueMoreThan(double threshold) {
     return ExValueMoreThan(threshold: threshold);
   }
 
   /// Creates a filter that matches if the value is less than the given [threshold].
-  static ExMetricKeyValueFilter valueLessThan(double threshold) {
+  static ExPostCondition valueLessThan(double threshold) {
     return ExValueLessThan(threshold: threshold);
   }
 
   /// Creates a filter that matches if the value is more than or equal to the given [threshold].
-  static ExMetricKeyValueFilter valueMoreThanOrEqual(double threshold) {
+  static ExPostCondition valueMoreThanOrEqual(double threshold) {
     return ExValueMoreThanOrEqual(threshold: threshold);
   }
 
   /// Creates a filter that matches if the value is less than or equal to the given [threshold].
-  static ExMetricKeyValueFilter valueLessThanOrEqual(double threshold) {
+  static ExPostCondition valueLessThanOrEqual(double threshold) {
     return ExValueLessThanOrEqual(threshold: threshold);
   }
 
   /// Creates a filter that matches if any of the given [filters] match.
-  static ExMetricKeyValueFilter or(List<ExMetricKeyValueFilter> filters) {
-    return ExMetricKeyValueOr(filters: filters);
+  static ExPostCondition or(List<ExPostCondition> filters) {
+    return ExPostCondOr(filters: filters);
   }
 
   /// Creates a filter that matches if all of the given [filters] match.
-  static ExMetricKeyValueFilter and(List<ExMetricKeyValueFilter> filters) {
-    return ExMetricKeyValueAnd(filters: filters);
+  static ExPostCondition and(List<ExPostCondition> filters) {
+    return ExPostCondAnd(filters: filters);
   }
 
   /// Creates a filter that matches if the given [filter] does not match.
-  static ExMetricKeyValueFilter not(ExMetricKeyValueFilter filter) {
-    return ExMetricKeyValueNot(filter: filter);
+  static ExPostCondition not(ExPostCondition filter) {
+    return ExPostCondNot(filter: filter);
   }
 
   /// Creates a filter that matches if any of the given [dimensions] are present.
-  static ExMetricKeyValueFilter filterByAnyDimension(List<String> dimensions) {
+  static ExPostCondition filterByAnyDimension(List<String> dimensions) {
     return ExFilterByAnyDimension(filterDimensions: dimensions);
   }
 
   /// Creates a filter that always matches.
-  static ExMetricKeyValueFilter alwaysTrue() {
-    return ExMetricKeyValueTrue();
+  static ExPostCondition alwaysTrue() {
+    return ExPostCondTrue();
   }
 }

@@ -9,12 +9,12 @@ abstract class ExMetricAggregation {
 }
 
 /// Abstract class for a metric filter strategy.
-abstract class ExMetricFilter {
+abstract class ExPreCondition {
   bool matches(MapEntry<ExMetricKey, List<double>> entry);
 }
 
 /// Abstract class for a key value metric filter strategy.
-abstract class ExMetricKeyValueFilter {
+abstract class ExPostCondition {
   bool matches(ExMetricKeyValue keyValue);
 }
 

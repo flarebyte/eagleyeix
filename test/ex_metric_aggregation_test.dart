@@ -3,12 +3,12 @@ import 'package:test/test.dart';
 
 import 'ex_fixtures.dart';
 
-class MockExMetricFilter extends ExMetricFilter {
+class MockExMetricFilter extends ExPreCondition {
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) => true;
 }
 
-class MockExMetricKeyValueFilter extends ExMetricKeyValueFilter {
+class MockExMetricKeyValueFilter extends ExPostCondition {
   @override
   bool matches(ExMetricKeyValue keyValue) => true;
 }
