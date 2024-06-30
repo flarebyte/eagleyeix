@@ -207,7 +207,7 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
 
 /// Class that applies multiple ExMetricAggregation strategies to a given entry
 /// and flattens the results.
-class ExMetricList {
+class ExMetricList extends ExMetricAggregation {
   final List<ExMetricAggregation> aggregations;
 
   /// Constructs an ExMetricList with a list of ExMetricAggregation strategies.
@@ -215,8 +215,8 @@ class ExMetricList {
 
   /// Aggregates the given entry using all provided aggregation strategies and
   /// flattens the results into a single list of ExMetricKeyValue.
-  List<ExMetricKeyValue> applyAggregations(
-      MapEntry<ExMetricKey, List<double>> entry) {
+  @override
+  List<ExMetricKeyValue> aggregate(MapEntry<ExMetricKey, List<double>> entry) {
     List<ExMetricKeyValue> results = [];
 
     for (var aggregation in aggregations) {

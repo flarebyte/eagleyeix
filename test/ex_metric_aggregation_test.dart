@@ -133,7 +133,7 @@ void main() {
       var exMetricList = ExMetricAggregations.list(
           [ExMetricAggregations.sum(), ExMetricAggregations.average()]);
 
-      var results = exMetricList.applyAggregations(
+      var results = exMetricList.aggregate(
           MapEntry(ExMetricKeyFixtures.buttonClick, [1.0, 2.0, 3.0]));
 
       expect(results, hasLength(2));
@@ -147,8 +147,8 @@ void main() {
 
       var metricValues = <double>[];
 
-      var results = exMetricList.applyAggregations(
-          MapEntry(ExMetricKeyFixtures.buttonClick, metricValues));
+      var results = exMetricList
+          .aggregate(MapEntry(ExMetricKeyFixtures.buttonClick, metricValues));
 
       expect(results, hasLength(0));
     });

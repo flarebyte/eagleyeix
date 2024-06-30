@@ -29,8 +29,11 @@ void main() {
     store.addMetric(AppMetrics.random, random.nextInt(50).toDouble());
   }
 
-  final log2ofCount = ExMetricAggregations.count(shrinker: ExMetricDoubleShrinkers.log(base: 2));
-  final medianOfRandom = ExMetricAggregations.median();
-  final stats = store.aggregateAll(log2ofCount);
+  final aggregations = ExMetricAggregations.list([
+    ExMetricAggregations.count(shrinker: ExMetricDoubleShrinkers.log(base: 2)),
+    ExMetricAggregations.median()
+  ]);
+
+  final stats = store.aggregateAll(aggregations);
   print(jsonEncode(stats));
 }
