@@ -205,6 +205,28 @@ class ExMetricQuantile extends ExMetricAggregation with ExMetricFilterMixin {
   }
 }
 
+/// Class that applies multiple ExMetricAggregation strategies to a given entry
+/// and flattens the results.
+class ExMetricList {
+  final List<ExMetricAggregation> aggregations;
+
+  /// Constructs an ExMetricList with a list of ExMetricAggregation strategies.
+  ExMetricList(this.aggregations);
+
+  /// Aggregates the given entry using all provided aggregation strategies and
+  /// flattens the results into a single list of ExMetricKeyValue.
+  List<ExMetricKeyValue> applyAggregations(
+      MapEntry<ExMetricKey, List<double>> entry) {
+    List<ExMetricKeyValue> results = [];
+
+    for (var aggregation in aggregations) {
+      results.addAll(aggregation.aggregate(entry));
+    }
+
+    return results;
+  }
+}
+
 /// Sugar syntax for constructing aggregations.
 class ExMetricAggregations {
   /// Sums the values of a metric.
@@ -282,5 +304,10 @@ class ExMetricAggregations {
       shrinker: shrinker,
       additionalDimensions: additionalDimensions,
     );
+  }
+
+  /// Creates an ExMetricList instance with the provided set of ExMetricAggregation strategies.
+  static ExMetricList list(List<ExMetricAggregation> aggregations) {
+    return ExMetricList(aggregations);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:eagleyeix/metric.dart';
 import 'package:test/test.dart';
 
+import 'ex_fixtures.dart';
+
 class MockExMetricFilter extends ExMetricFilter {
   @override
   bool matches(MapEntry<ExMetricKey, List<double>> entry) => true;
@@ -124,6 +126,31 @@ void main() {
         expect(result.first.key.dimensions['quantile'], quantile.toString());
         expect(result.first.value, 7.5);
       });
+    });
+  });
+  group('ExMetricList', () {
+    test('should aggregate metrics using provided strategies', () {
+      var exMetricList = ExMetricAggregations.list(
+          [ExMetricAggregations.sum(), ExMetricAggregations.average()]);
+
+      var results = exMetricList.applyAggregations(
+          MapEntry(ExMetricKeyFixtures.buttonClick, [1.0, 2.0, 3.0]));
+
+      expect(results, hasLength(2));
+      expect(results[0].value, equals(6.0)); // Sum of [1.0, 2.0, 3.0]
+      expect(results[1].value, equals(2.0)); // Average of [1.0, 2.0, 3.0]
+    });
+
+    test('should handle empty list of values', () {
+      var exMetricList = ExMetricAggregations.list(
+          [ExMetricAggregations.sum(), ExMetricAggregations.average()]);
+
+      var metricValues = <double>[];
+
+      var results = exMetricList.applyAggregations(
+          MapEntry(ExMetricKeyFixtures.buttonClick, metricValues));
+
+      expect(results, hasLength(0));
     });
   });
 }
