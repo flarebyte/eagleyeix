@@ -153,7 +153,7 @@ void main() {
     });
 
     test('ExFilterByAnyDimension matches correctly', () {
-      final filter = ExPostConditions.filterByAnyDimension(['region', 'zone']);
+      final filter = ExPostConditions.filterByAnyDimension({'region': 'us'});
       final keyValue = ExMetricKeyValue(key: key, value: 10.0);
 
       expect(filter.matches(keyValue), isTrue);

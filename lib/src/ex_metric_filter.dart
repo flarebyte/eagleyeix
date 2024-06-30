@@ -101,7 +101,7 @@ class ExPostCondTrue extends ExPostCondition {
 /// Class that filters by any given dimension.
 class ExFilterByAnyDimension extends ExPostCondition {
   /// List of dimensions to filter by.
-  final List<String> filterDimensions;
+  final Map<String, String> filterDimensions;
 
   /// Constructs an [ExFilterByAnyDimension] instance with the given [filterDimensions].
   ExFilterByAnyDimension({
@@ -110,12 +110,13 @@ class ExFilterByAnyDimension extends ExPostCondition {
 
   @override
   bool matches(ExMetricKeyValue keyValue) {
-    for (var dimension in filterDimensions) {
-      if (keyValue.key.dimensions.containsKey(dimension)) {
-        return true;
+    for (var entry in filterDimensions.entries) {
+      if (!keyValue.key.dimensions.containsKey(entry.key) ||
+          keyValue.key.dimensions[entry.key] != entry.value) {
+        return false;
       }
     }
-    return false;
+    return true;
   }
 }
 
@@ -300,7 +301,7 @@ class ExPostConditions {
   }
 
   /// Creates a filter that matches if any of the given [dimensions] are present.
-  static ExPostCondition filterByAnyDimension(List<String> dimensions) {
+  static ExPostCondition filterByAnyDimension(Map<String, String> dimensions) {
     return ExFilterByAnyDimension(filterDimensions: dimensions);
   }
 
