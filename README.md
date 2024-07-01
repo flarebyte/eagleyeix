@@ -5,20 +5,53 @@
 > Eagleyeix the Dart library for sharper observations and smarter
 > reactions
 
-Observe
+Eagleyeix is a metrics logger that collects and records numerical data
+representing system performance or application behaviour, typically in
+key-value pairs. Unlike general loggers, it focuses solely on metrics such as
+CPU usage, memory consumption, request rates, and business KPIs.
 
 ![Hero image for eagleyeix](doc/eagleyeix.jpeg)
 
 Highlights:
 
--   Observe
+-   Collect numerical data representing system performance or application
+    behaviour.
+-   Ensure higher user privacy by aggregating the data. Aggregation
+    involves combining individual data points into broader summaries.
+-   To improve privacy, metric data can be stored as orders of magnitude.
+-   Metrics data can be exported as JSON
 
 A few examples:
 
-todo:
+Create a metric key:
 
 ```dart
-todo
+static final create = ExMetricKey(name: ['eagleyeix','example','create'],
+dimensions: {'unit': 'count'});
+```
+
+Create a metric store:
+
+```dart
+final store = ExMetricStoreHolder().store;
+```
+
+Add a metric:
+
+```dart
+store.addMetric(create, 0.7);
+```
+
+Create a median aggregation:
+
+```dart
+final median = ExMetricAggregations.median()
+```
+
+Aggregate the metrics:
+
+```dart
+store.aggregateAll(median);
 ```
 
 ## Documentation and links
