@@ -25,8 +25,16 @@ model:
       - image-hero
     cheatsheetFormat: dart
     cheatsheet:
-      - title: todo
-        example: todo
+      - title: Create a metric key
+        example: "static final create = ExMetricKey(name: ['eagleyeix','example','create'], dimensions: {'unit': 'count'});"
+      - title: Create a metric store
+        example: final store = ExMetricStoreHolder().store;
+      - title: Add a metric
+        example: store.addMetric(create, 0.7);
+      - title: Create a median aggregation
+        example: final median = ExMetricAggregations.median()
+      - title: Aggregate the metrics
+        example: store.aggregateAll(median);
   github:
     account: flarebyte
     name: eagleyeix
