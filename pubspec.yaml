@@ -5,6 +5,9 @@ homepage: https://github.com/flarebyte/eagleyeix
 repository: https://github.com/flarebyte/eagleyeix
 topics:
   - observer
+  - metric
+  - logger
+  - privacy
 environment:
   sdk: ^3.4.3
 dev_dependencies:
